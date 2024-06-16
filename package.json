@@ -1,0 +1,30 @@
+{
+  "name": "orionuo",
+  "version": "1.0.0",
+  "description": "Collection of Orion scripts.",
+  "main": " ",
+  "scripts": {
+    "lint": "eslint scripts",
+    "lint:fix": "eslint scripts --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidadas/OrionUO.git"
+  },
+  "keywords": [
+    "OrionUO",
+    "Orion",
+    "UO",
+    "Ultima",
+    "Online"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidadas/OrionUO/issues"
+  },
+  "homepage": "https://github.com/davidadas/OrionUO#readme",
+  "devDependencies": {
+    "eslint": "^9.5.0"
+  }
+}
