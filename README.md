@@ -3,11 +3,11 @@ Collection of Orion UO Scripts
 
 ## Scripts
 
-### [Resource Gathering](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering) (2)
+### [Resource Gathering](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering)
 * [Lumberjacking](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering/Lumberjacking) (1)
 * [Mining](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering/Mining) (1)
 
-### [Craft Related Scripts](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts) (2)
+### [Craft Related Scripts](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts)
 * [Alchemy](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Alchemy) (0)
 * [Blacksmithy](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Blacksmithy) (1)
 * [Bulk Order Deeds](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Bulk%20Order%20Deeds) (1)
