@@ -1,4 +1,4 @@
-# Adas Runebook LumberMiner
+# Adas Runebook Lumber/Miner
 
 This script is designed to automate resource gathering in OrionUO for mining and lumberjacking. It includes features such as managing runebooks, handling pack animals, crafting tools, and escaping dangerous situations.
 
@@ -67,3 +67,8 @@ const Config = {
     [0x19B9, 0x0000], // Normal Ore.
   ]
 };
+```
+
+## License
+
+This script is licensed under the MIT License.
