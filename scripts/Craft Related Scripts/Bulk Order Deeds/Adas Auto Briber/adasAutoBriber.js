@@ -4,12 +4,12 @@ const Configs = {
 	// Supported options are: blacksmithy, fletching, carpentry, tailoring, tinkering.
 	runebookConfigs: {
 		blacksmithy: [
-			{ serial: 0x471613D7, runes: 16 },
-			{ serial: 0x4716127E, runes: 16 }
+			{ serial: '<SET ME>', runes: 16 },
+			{ serial: '<SET ME>', runes: 16 }
 		],
 		fletching: [
-			{ serial: 0x465229A8, runes: 11 },
-			{ serial: 0x46522D29, runes: 6 }
+			{ serial: '<SET ME>', runes: 16 },
+			{ serial: '<SET ME>', runes: 16 }
 		]
 	},
 	// List of items to ignore.

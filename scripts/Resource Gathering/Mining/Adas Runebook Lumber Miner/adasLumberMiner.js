@@ -22,18 +22,18 @@ const Config = {
   // Runebook configurations
   runebookConfigs: {
     travelSpell: 'Recall', // Options: 'Recall', 'Gate' (not implemented), 'Sacred Journey' (not implemented)
-    home: ['<SET ME>', 2], // First option is rune serial, second is rune number within book.
-    lumberjacking: [[0x4716da2e, 16]],
-    mining: [[0x4716db93, 16]]
+    home: [0x12458678, 2], // First option is rune serial, second is rune number within book.
+    lumberjacking: [[0x12458678, 16]],
+    mining: [[0x12458678, 16]]
   },
   
   // Pack animal configurations
   packAnimalConfigs: {
     waitForPackAnimal: true,
     mountWhenTraveling: true,
-    mountSerial: '<SET ME>', // Set this to your mount's serial number.
-    packAnimalSerial: '<SET ME>', // Set this to your pack animal's serial number.
-    fireBeetleSerial: '<SET ME>' // Set this to your fire beetle's serial number.
+    mountSerial: 0x12458678, // Set this to your mount's serial number.
+    packAnimalSerial: 0x12458678, // Set this to your pack animal's serial number.
+    fireBeetleSerial: 0x12458678 // Set this to your fire beetle's serial number.
   },
   
   // Crafting configurations
@@ -45,7 +45,7 @@ const Config = {
   
   // Home configurations
   homeConfigs: {
-    secureContainerSerial: '<SET ME>', // Set this to your secure container's serial number.
+    secureContainerSerial: 0x12458678, // Set this to your secure container's serial number.
     castCureIfDamaged: false // Not implemented.
   },
   
