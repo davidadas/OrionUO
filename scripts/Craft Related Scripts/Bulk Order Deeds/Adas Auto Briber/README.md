@@ -1,4 +1,4 @@
-# Adas auto Briber
+# Adas Auto Briber
 
 This script automates the process of bribing NPCs to improve Bulk Order Deeds (BODs) in the game Ultima Online using the OrionUO Assistant. The script is configured to work with specific professions and handles travel to various runebook locations to find the appropriate NPCs for bribing.
 

@@ -28,6 +28,7 @@ const Configs = {
 		{ target: 'Ranger\'s Shortbow', quality: '*', material: '*'  },
 		{ target: 'Lightweight Shortbow', quality: '*', material: '*'  },
 		{ target: 'Mystical Shortbow', quality: '*', material: '*'  },
+		{ target: 'Magical Shortbow', quality: '*', material: '*'  },
 		{ target: 'Assassin\'s Shortbow', quality: '*', material: '*'  }
 	],
 	// List of BODs to automatically improve.
@@ -332,8 +333,6 @@ function hasBribeOption(npc) {
 }
 
 function selectBribe(npc, bod) {
-	bod && Logger.debug(bod.Properties());
-
 	Orion.CloseGump('contextmenu');
 	Orion.CancelContextMenu();
 	Orion.RequestContextMenu(npc.Serial());
