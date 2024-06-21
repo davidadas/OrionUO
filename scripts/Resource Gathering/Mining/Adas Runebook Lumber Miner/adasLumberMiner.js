@@ -1,8 +1,19 @@
+//-----------------------------------------------------------
+// Script Name: Adas Runebook Lumber Miner
+// Author: DavidAdas
+// Version: 0.1.0
+// Shard OSI / FS: OSI
+// Revision Date: 6/21/24
+// Purpose: Runebook harvest lumber and ore.
+//-------------------------------------------------------------
+//
+// Instructions: Read the config carefully below and set the values accordingly.
+//
 const Config = {
 	type: 'mining', // Options: mining, lumberjacking.
 	runebookConfigs: {
 		travelSpell: 'Recall', // Options: Recall, Gate (not implemented), Sacred Journey
-		home: { serial: '<SET ME>', rune: 16 },
+		home: { serial: '<SET ME>', rune: 1 },
 		lumberjacking: [{ serial: '<SET ME>', runes: 16 }],
 		mining: [{ serial: '<SET ME>', runes: 16 }]
 	},

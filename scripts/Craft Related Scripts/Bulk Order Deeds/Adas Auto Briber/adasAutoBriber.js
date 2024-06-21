@@ -1,4 +1,15 @@
-const Configs = {
+//-----------------------------------------------------------
+// Script Name: Adas Auto Briber.
+// Author: DavidAdas
+// Version: 0.1.0
+// Shard OSI / FS: OSI
+// Revision Date: 6/21/24
+// Purpose: Bribe officials to improve low value bulk order deeds.
+//-------------------------------------------------------------
+//
+// Instructions: Read the config carefully below and set the values accordingly.
+//
+const Config = {
 	// Runebook configurations.
 	// Each runebook should be dedicated to one profession (e.g. smiths, carpenters, etc).
 	// Supported options are: blacksmithy, fletching, carpentry, tailoring, tinkering.
@@ -8,6 +19,18 @@ const Configs = {
 			{ serial: '<SET ME>', runes: 16 }
 		],
 		fletching: [
+			{ serial: '<SET ME>', runes: 16 },
+			{ serial: '<SET ME>', runes: 16 }
+		],
+		carpentry: [
+			{ serial: '<SET ME>', runes: 16 },
+			{ serial: '<SET ME>', runes: 16 }
+		],
+		tailoring: [
+			{ serial: '<SET ME>', runes: 16 },
+			{ serial: '<SET ME>', runes: 16 }
+		],
+		tinkering: [
 			{ serial: '<SET ME>', runes: 16 },
 			{ serial: '<SET ME>', runes: 16 }
 		]
@@ -43,8 +66,8 @@ const Configs = {
 	]
 };
 
-const bodManager = new BodManager(Configs.bodTargets, Configs.ignoreList);
-const runebookManager = new RunebookManager(Configs.runebookConfigs);
+const bodManager = new BodManager(Config.bodTargets, Config.ignoreList);
+const runebookManager = new RunebookManager(Config.runebookConfigs);
 
 // eslint-disable-next-line no-unused-vars
 function bribeOfficials() {
