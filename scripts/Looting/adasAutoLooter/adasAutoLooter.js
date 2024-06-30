@@ -96,7 +96,6 @@ Configs.corpseIgnoreList = [
 
 const attemptList = {};
 
-
 // eslint-disable-next-line no-unused-vars
 function autoLoot() {
 	Orion.UseIgnoreList('IgnoredCorpses');
@@ -113,7 +112,6 @@ function autoLoot() {
 				}
 			});
 			Orion.Wait(250);
-			Logger.info(corpses);
 		}
 	} catch (error) {
 		Logger.error(error);
@@ -183,7 +181,7 @@ function filterIgnoredItems(items) {
 
 	// Remove items that have properties in the ignore list.
 	return items.filter(function(item) {
-		for (var i = 0; i < propertyIgnoreList; i++) {
+		for (var i = 0; i < propertyIgnoreList.length; i++) {
 			if (item.Properties().toLowerCase().indexOf(propertyIgnoreList[i].toLowerCase()) > -1) {
 				return false;
 			}
