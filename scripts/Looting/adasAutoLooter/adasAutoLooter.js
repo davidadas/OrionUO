@@ -163,7 +163,7 @@ function isIgnoredCorpse(corpse) {
 
 function getAllCorpses() {
 	// Get only corpses that are within the loot range.
-	const corpseSerials = Orion.FindType('any', 0xFFFFF, 'any', 'ground', 2);
+	const corpseSerials = Orion.FindType(0x2006, 0xFFFFF, 'any', 'ground', 2);
 	const corpses = corpseSerials
 		.map(function (serial) {
 			return Orion.FindObject(serial);
