@@ -73,7 +73,7 @@ const runebookManager = new RunebookManager(Config.runebookConfigs);
 function bribeOfficials() {
 	clearStates();
 
-	let hasBods = true;
+	var hasBods = true;
 
 	while (hasBods) {
 		const nextBod = bodManager.getNextBod();
@@ -111,10 +111,10 @@ function clearStates() {
 function findClosestObject(object, objects) {
 	const x = object.X();
 	const y = object.Y();
-	let closestObject = null;
-	let minDistance = Infinity;
+	var closestObject = null;
+	var minDistance = Infinity;
 
-	for (let i = 0; i < objects.length; i++) {
+	for (var i = 0; i < objects.length; i++) {
 		const obj = objects[i];
 		const distance = Math.sqrt(Math.pow((x - obj.X()), 2) + Math.pow((y - obj.Y()), 2));
 		if (distance < minDistance) {
@@ -285,7 +285,7 @@ function BodManager(targets, ignoreList) {
 		const categories = ['material', 'quality', 'target'];
 		const keys = Object.keys(ignoreList);
 
-		for (let i = 0; i < keys.length; i++) {
+		for (var i = 0; i < keys.length; i++) {
 			const ignoreListItem = ignoreList[keys[i]];
 			const isIgnored = categories.every(function(category) {
 				if(ignoreListItem[category] === '*') {
@@ -305,7 +305,7 @@ function BodManager(targets, ignoreList) {
 
 	function _isMatch(bod) {
 		const parsedBod = parseBod(bod);
-		for (let i = 0; i < targets.length; i++) {
+		for (var i = 0; i < targets.length; i++) {
 			const hasQuantities = !!(targets[i].quantities && targets[i].quantities.filter(function (targetQuantity) {
 				return targetQuantity === parsedBod.quantity;
 			}).length);
@@ -345,7 +345,7 @@ function hasBribeOption(npc) {
 		Logger.warn('Could not get context menu from: ' + npc.Properties().trim());
 	}
 	const npcMenu = Orion.GetContextMenu();
-	for (let i = 0; i < npcMenu.ItemsCount(); i++) {
+	for (var i = 0; i < npcMenu.ItemsCount(); i++) {
 		if (npcMenu.ItemText(i) === 'Bribe') {
 			Orion.CloseGump('contextmenu');
 			return true;
@@ -385,7 +385,7 @@ function selectBribe(npc, bod) {
 function isBodProducer(npc, bod) {
 	const color = parseInt(bod.Color());
 	const professions = NpcMap[color];
-	for (let i = 0; i < professions.length; i++) {
+	for (var i = 0; i < professions.length; i++) {
 		if (npc.Properties().trim().toLowerCase().indexOf(professions[i].toLowerCase()) > -1) {
 			return true;
 		}

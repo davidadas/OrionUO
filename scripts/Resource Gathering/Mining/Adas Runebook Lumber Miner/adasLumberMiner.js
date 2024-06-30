@@ -117,7 +117,7 @@ function dismount() {
 }
 
 function travelNextLocation() {
-	let hasTraveled = false;
+	var hasTraveled = false;
 	while (!hasTraveled) {
 		mount();
 		runebookManager.travelNext();
@@ -224,7 +224,7 @@ function getPackAnimalBackpack() {
 		// Go through items listed in the pack animal.
 		const packAnimalInventory = Orion.FindType(any, any, packAnimal.Serial());
 		// Find the item named 'backpack' and return it.
-		for (let i = 0; i < packAnimalInventory.length; i++) {
+		for (var i = 0; i < packAnimalInventory.length; i++) {
 			const item = Orion.FindObject(packAnimalInventory[i]);
 			if (item.Name().toLowerCase() === 'backpack') {
 				return item;
@@ -293,7 +293,7 @@ function smeltOre() {
 
 	if (!fireBeetle) return;
 
-	let storedOre = getStoredResourcesByType('ore', backpack);
+	var storedOre = getStoredResourcesByType('ore', backpack);
 
 	Orion.Wait(1000);
 
@@ -321,7 +321,7 @@ function storeInSecure() {
 		Orion.OpenContainer(container.Serial());
 		Orion.Wait(1000);
 		const storedResources = getStoredResources(container.Serial());
-		for (let i = 0; i < storedResources.length; i++) {
+		for (var i = 0; i < storedResources.length; i++) {
 			Orion.MoveItem(storedResources[i], 0, secureContainer.Serial());
 			Orion.Wait(1500);
 		}
@@ -630,7 +630,7 @@ function CraftingGump(type) {
 	];
 
 	function _getGump() {
-		for (let i = 0; i < Orion.GumpCount(); i++) {
+		for (var i = 0; i < Orion.GumpCount(); i++) {
 			const gump = Orion.GetGump(i);
 			const gumpId = parseInt(gump.ID());
 			if (gumpIds.indexOf(gumpId) > -1) {
@@ -711,10 +711,10 @@ function RunebookManager(runebookConfigs, type) {
 		sacredjourney: 75
 	};
 	const travelSpell = travelSpells[runebookConfigs.travelSpell.replace(/\s/g, '').toLowerCase()];
-	let currentRuneIndex = 0;
-	let currentRunebookIndex = 0;
-	let lastRunebook;
-	let lastIndex;
+	var currentRuneIndex = 0;
+	var currentRunebookIndex = 0;
+	var lastRunebook;
+	var lastIndex;
 
 	function _travelToLocation(runebook, index) {
 		Orion.CancelWaitGump();
@@ -881,7 +881,7 @@ const ItemManager = {
 		{displayName: 'Blank Scroll', graphic: 0x0EF3, types: {}}
 	],
 	findItemByDisplayName: function (displayName) {
-		for (let i = 0; i < this._MasterItemList.length; i++) {
+		for (var i = 0; i < this._MasterItemList.length; i++) {
 			if (displayName.toLowerCase() === this._MasterItemList[i].displayName.toLowerCase()) {
 				return this._MasterItemList[i];
 			}
@@ -889,7 +889,7 @@ const ItemManager = {
 		return null;
 	},
 	findItemByGraphic: function (graphic) {
-		for (let i = 0; i < this._MasterItemList.length; i++) {
+		for (var i = 0; i < this._MasterItemList.length; i++) {
 			if (graphic === this._MasterItemList[i].graphic) {
 				return this._MasterItemList[i];
 			}
@@ -898,7 +898,7 @@ const ItemManager = {
 	},
 	findMaterialNameByGraphic: function (graphic) {
 		const keys = Object.keys(MaterialColorMap);
-		for (let i = 0; i < keys; i++) {
+		for (var i = 0; i < keys; i++) {
 			if (MaterialColorMap[keys[i]] === parseInt(graphic)) {
 				return keys[i];
 			}

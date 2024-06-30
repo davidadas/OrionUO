@@ -43,7 +43,7 @@ function requestBods() {
 
 	Config.bodsToCollect.forEach(function(skill) {
 		const npc = getNpc(skill);
-		for (let i = 0; i < 3; i++) {
+		for (var i = 0; i < 3; i++) {
 			requestBod(npc.Serial());
 		}
 	});
