@@ -70,7 +70,7 @@ Configs.masterLootList = [
 	{ property: 'luck', value: 150 },
 	[{ property: 'magery', value: 15}, { property: 'meditation', value: 15 }],
 	'legendary',
-	'map',
+	'map'
 ];
 
 // Configuration for lists set in the Orion client.
@@ -96,6 +96,7 @@ Configs.corpseIgnoreList = [
 
 const attemptList = {};
 
+
 // eslint-disable-next-line no-unused-vars
 function autoLoot() {
 	Orion.UseIgnoreList('IgnoredCorpses');
@@ -111,7 +112,8 @@ function autoLoot() {
 					Logger.info('All Looted!');
 				}
 			});
-			Orion.Wait(1000);
+			Orion.Wait(250);
+			Logger.info(corpses);
 		}
 	} catch (error) {
 		Logger.error(error);
@@ -238,9 +240,9 @@ function getLootableItems(corpse) {
 			const lootListItem = masterLootList[i];
 			if (
 				(typeof lootListItem === 'number' && lootListItem === parseInt(val.Graphic())) ||
-                (typeof lootListItem === 'string' && val.Properties().toLowerCase().indexOf(lootListItem) > -1) ||
-                (typeof lootListItem === 'object' && !Array.isArray(lootListItem) && hasPropertyMatch(val, lootListItem)) ||
-                (Array.isArray(lootListItem) && matchesAllProperties(val, lootListItem))
+				(typeof lootListItem === 'string' && val.Properties().toLowerCase().indexOf(lootListItem) > -1) ||
+				(typeof lootListItem === 'object' && !Array.isArray(lootListItem) && hasPropertyMatch(val, lootListItem)) ||
+				(Array.isArray(lootListItem) && matchesAllProperties(val, lootListItem))
 			) {
 				acc.push(val);
 				break;
@@ -281,7 +283,7 @@ function lootItem(item) {
 	const storageContainerSerial = Configs.useLootContainer && Configs.lootContainerSerial ? Configs.lootContainerSerial : Orion.FindObject(backpack).Serial();
 
 	Orion.Wait(750);
-	Orion.MoveItem(item.Serial(), storageContainerSerial);
+	Orion.MoveItem(item.Serial(), -1, storageContainerSerial);
 	Orion.Wait(750);
 
 	// Return true if the item was removed from the inventory; false otherwise.
