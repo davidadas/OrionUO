@@ -415,7 +415,7 @@ function walkToNpc(npc) {
 		}
 	}
 
-	return Orion.WalkTo(npc.X(), npc.Y(), npc.Z());;
+	return Orion.WalkTo(npc.X(), npc.Y(), npc.Z());
 }
 
 function bribeNpc(npc, bod) {
