@@ -3,19 +3,20 @@ Collection of Orion UO Scripts
 
 ## Scripts
 
-### [Looting](https://github.com/davidadas/orionuo/tree/main/main/scripts/Looting) (1)
+### [Looting](https://github.com/davidadas/OrionUO/tree/main/scripts/Looting) (1)
+* [Looting](https://github.com/davidadas/OrionUO/tree/main/scripts/Looting) (1)
 
-### [Resource Gathering](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering) (2)
-* [Lumberjacking](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering/Lumberjacking) (1)
-* [Mining](https://github.com/davidadas/orionuo/tree/main/main/scripts/Resource%20Gathering/Mining) (1)
+### [Resource Gathering](https://github.com/davidadas/orionuo/tree/main/scripts/Resource%20Gathering) (2)
+* [Lumberjacking](https://github.com/davidadas/orionuo/tree/main/scripts/Resource%20Gathering/Lumberjacking) (1)
+* [Mining](https://github.com/davidadas/orionuo/tree/main/scripts/Resource%20Gathering/Mining) (1)
 
-### [Craft Related Scripts](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts) (4)
-* [Alchemy](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Alchemy) (0)
-* [Blacksmithy](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Blacksmithy) (1)
-* [Bulk Order Deeds](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Bulk%20Order%20Deeds) (2)
-* [Carpentry](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Carpentry) (0)
-* [Fletching](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Fletching) (0)
-* [Tinkering](https://github.com/davidadas/orionuo/tree/main/main/scripts/Craft%20Related%20Scripts/Tinkering) (1)
+### [Craft Related Scripts](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts) (4)
+* [Alchemy](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Alchemy) (0)
+* [Blacksmithy](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Blacksmithy) (1)
+* [Bulk Order Deeds](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Bulk%20Order%20Deeds) (2)
+* [Carpentry](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Carpentry) (0)
+* [Fletching](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Fletching) (0)
+* [Tinkering](https://github.com/davidadas/orionuo/tree/main/scripts/Craft%20Related%20Scripts/Tinkering) (1)
 
 ## FAQ
 
