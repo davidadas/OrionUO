@@ -145,12 +145,12 @@ function harvestResources() {
 
 	while (
 		!Orion.InJournal('no metal here') &&
-        !Orion.InJournal('too far away') &&
-        !Orion.InJournal('see that location') &&
-        !Orion.InJournal('can\'t use an axe') &&
-        !Orion.InJournal('not enough wood') &&
-        !Orion.InJournal('can\'t mine')
-	) {
+		!Orion.InJournal('too far away') &&
+		!Orion.InJournal('see that location') &&
+		!Orion.InJournal('can\'t use an axe') &&
+		!Orion.InJournal('not enough wood') &&
+		!Orion.InJournal('can\'t mine')
+		) {
 		// Dismount the pet before mining.
 		dismount();
 		// Escape if conditions are present.
@@ -738,14 +738,14 @@ function RunebookManager(runebookConfigs, type) {
 
 	function travelHome() {
 		const homeConfig = runebookConfigs.home;
-		return _travelToLocation(homeConfig[0], homeConfig[1]);
+		return _travelToLocation(homeConfig.serial, homeConfig.rune);
 	}
 
 	function travelNext() {
-		_travelToLocation(runebooks[currentRunebookIndex][0], currentRuneIndex);
+		_travelToLocation(runebooks[currentRunebookIndex].serial, currentRuneIndex);
 
 		// Increment the current rune and runebook.
-		if (currentRuneIndex === runebooks[currentRunebookIndex][1] - 1) {
+		if (currentRuneIndex === runebooks[currentRunebookIndex].runes - 1) {
 			currentRuneIndex = 0;
 			if (currentRunebookIndex === runebooks.length - 1) {
 				currentRunebookIndex = 0;
@@ -759,11 +759,11 @@ function RunebookManager(runebookConfigs, type) {
 	}
 
 	function hasLast() {
-		return lastRunebook[0] && lastIndex;
+		return lastRunebook.serial && lastIndex;
 	}
 
 	function travelLast() {
-		_travelToLocation(lastRunebook[0], lastIndex);
+		_travelToLocation(lastRunebook.serial, lastIndex);
 	}
 
 	return {
@@ -946,5 +946,5 @@ const resourceTypes = {
 
 const toolTypes = {
 	mining: [0x0F3A], // Shovels and pickaxes.
-	lumberjacking: [0x0F44, 0x0F48, 0x0F49, 0x0F47, 0x0F4B, 0x0F45, 0x13FB, 0x1443, 0x13B0] // Axes.
+	lumberjacking: [0x0F43, 0x0F44, 0x0F48, 0x0F49, 0x0F47, 0x0F4B, 0x0F45, 0x13FB, 0x1443, 0x13B0] // Axes.
 };
