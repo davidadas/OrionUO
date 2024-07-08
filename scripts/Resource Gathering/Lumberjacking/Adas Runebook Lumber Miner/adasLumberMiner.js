@@ -150,7 +150,7 @@ function harvestResources() {
 		!Orion.InJournal('can\'t use an axe') &&
 		!Orion.InJournal('not enough wood') &&
 		!Orion.InJournal('can\'t mine')
-		) {
+	) {
 		// Dismount the pet before mining.
 		dismount();
 		// Escape if conditions are present.

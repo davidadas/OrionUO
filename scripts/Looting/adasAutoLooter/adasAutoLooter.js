@@ -4,45 +4,32 @@ const Configs = {
 		lootWhenHidden: false, // If true, looter will loot even while hidden.
 		lootFromGround: false, // If true, looter will loot items from ground in addition to corpses. NOTE: May degrade performance.
 		useMaxOpenAttempts: true, // Set true to ignore a corpse after a certain number of attempts have been made.
-		maxOpenAttempts: 5, // Number of attempts to open corpse before it is ignored.
+		maxOpenAttempts: 5 // Number of attempts to open corpse before it is ignored.
 	},
 	backpack: {
+		useBagOfSending: true, // Use bag of sending on gold when nearing weight limit.
 		useLootContainer: true, // Set true if you wish to store loot in a specific container.
-		lootContainerSerial: 0x459A24FE // Provide the container for which to store loot.
+		lootContainerSerial: '<SET ME>' // Provide the container for which to store loot.
 	},
 	// Existing Orion "Find List".
 	orionFindLists: [
 		'reagents' // example
 	],
-	// Prefab lists. Optoins are 'StygianAbyssArtifacts', 'ImbuingIngredients', and 'Jewels'.
+	// Prefab lists. Options are 'StygianAbyssArtifacts', 'ImbuingIngredients', 'Gold', and 'Jewels'.
 	prefabLists: [
-		'Jewels',
 		'StygianAbyssArtifacts',
 		'ImbuingIngredients',
+		'Jewels',
+		'Gold'
 	],
 	// Custom list of user-configured loot preferences.
 	customLootList: [
-		[
-			[
-				{ property: 'energy damage', minimum: 100 },
-				{ property: 'fire damage', minimum: 100 },
-				{ property: 'poison damage', minimum: 100 },
-				{ property: 'cold damage', minimum: 100 },
-			],
-			'major',
-		],
-		[{ property: 'magery', minimum: 15 }, { property: 'meditation', minimum: 15 }],
-		[{ property: 'bushido', minimum: 15 }, { property: 'swordsmanship', minimum: 15 }],
-		[{ property: 'animal taming', minimum: 15}, { property: 'animal lore', minimum: 15 }],
-		[{ property: 'luck', minimum: 150 }],
-		{ property: 'Splintering Weapon', minimum: 30, minimumProperties: 1, maximumProperties: 3 },
-		[{ property: 'Splintering Weapon', minimum: 20 }, 'bokuto'],
-		[['ring', 'bracelet'], 'major artifact'],
-		['double axe', 'luck', 'repair'],
+		[{ property: 'magery', propertyMinimum: 15 }, { property: 'meditation', propertyMinimum: 15 }],
+		[{ property: 'bushido', propertyMinimum: 15 }, { property: 'swordsmanship', propertyMinimum: 15 }],
+		[{ property: 'animal taming', propertyMinimum: 15}, { property: 'animal lore', propertyMinimum: 15 }],
+		{ property: 'Splintering Weapon', propertyMinimum: 30, minTotalProperties: 1, maxTotalProperties: 3 },
 		'legendary',
-		'treasure map',
-		'paragon',
-		'parrot',
+		'treasure map'
 	],
 	propertyIgnoreList: [
 		'cursed',
@@ -80,6 +67,7 @@ function autoLootCorpses() {
 	try {
 		while(Player.Hits()) {
 			lootGround();
+			sendGoldToBank();
 			const corpses = getAllCorpses();
 			corpses.forEach(lootCorpse);
 			Orion.Wait(250);
@@ -172,7 +160,13 @@ function filterIgnoredItems(items) {
 	// Remove items that have properties in the ignore list.
 	return items.filter(function(item) {
 		for (var i = 0; i < propertyIgnoreList.length; i++) {
-			if (item.Properties().toLowerCase().indexOf(propertyIgnoreList[i].toLowerCase()) > -1) {
+			// Special case for unwieldy, which is not always labeled as such.
+			if (propertyIgnoreList[i].toLowerCase() === 'unwieldy' && isEquipment(item)) {
+				const itemWeight = getWeight(item);
+				if (itemWeight >= 50) {
+					return false;
+				}
+			} else if (item.Properties().toLowerCase().indexOf(propertyIgnoreList[i].toLowerCase()) > -1) {
 				return false;
 			}
 		}
@@ -181,17 +175,28 @@ function filterIgnoredItems(items) {
 	});
 }
 
+function getLootableItemsFromOrionLists(containerSerial) {
+	// Collect all the loot specified in an Orion Find List.
+	return Configs.orionFindLists.reduce(function (acc, listName) {
+		const lootSerials = Orion.FindList(listName, any, containerSerial, ' ', 'finddistance', ' ', true);
+
+		for (var i = 0; i < lootSerials; i++) {
+			acc.push(lootSerials[i]);
+		}
+
+		return acc;
+	}, []);
+}
+
 function getPrefabListProperties() {
 	const userPrefabs = Configs.prefabLists;
 	const prefabListNames = Object.keys(PrefabList);
-	const results = [];
+	var results = [];
 
 	for (var i = 0; i < prefabListNames.length; i++) {
 		for (var j = 0; j < userPrefabs.length; j++) {
 			if (prefabListNames[i].toLowerCase() === userPrefabs[j].toLowerCase()) {
-				results.concat(PrefabList[prefabListNames[i]]);
-			} else {
-				Logger.warn('No such prefab list: ' + userPrefabs[j]);
+				results = results.concat(PrefabList[prefabListNames[i]]);
 			}
 		}
 	}
@@ -218,11 +223,14 @@ function hasPropertyMatch(item, itemProperty) {
 		if (match) {
 			const extractedValue = parseInt(match[1], 10);
 			const propertyCount = getPropertyCount(item, ItemProperties);
-			const hasMinimum = itemProperty.minimum ? extractedValue >= itemProperty.minimum : true;
-			const hasMaximum = itemProperty.maximum ? extractedValue <= itemProperty.maximum : true;
-			const minimumProperties = itemProperty.minimumProperties ? propertyCount >= itemProperty.minimumProperties : true;
-			const maxProperties = itemProperty.maximumProperties ? propertyCount <= itemProperty.maximumProperties : true;
-			return hasMinimum && hasMaximum && minProperties && maxProperties;
+			// Individual property values.
+			const propertyMinimum = itemProperty.propertyMinimum ? extractedValue >= itemProperty.propertyMinimum : true;
+			const propertyMaximum = itemProperty.propertyMaximum ? extractedValue <= itemProperty.propertyMaximum : true;
+			// Total property values.
+			const minTotalProperties = itemProperty.minTotalProperties ? propertyCount >= itemProperty.minTotalProperties : true;
+			const maxTotalProperties = itemProperty.maxTotalProperties ? propertyCount <= itemProperty.maxTotalProperties : true;
+
+			return propertyMinimum && propertyMaximum && minTotalProperties && maxTotalProperties;
 		}
 	}
 
@@ -262,9 +270,9 @@ function getLootableItems(container) {
 
 	const lootFromLists = getLootableItemsFromOrionLists(containerSerial);
 
-	const lootList = containerItems.reduce(function (acc, item) {
+	const lootableItems = containerItems.reduce(function (acc, item) {
 		for (var i = 0; i < lootList.length; i++) {
-			const lootListItem = customLootList[i];
+			const lootListItem = lootList[i];
 
 			if (
 				(Array.isArray(lootListItem) && matchesAllProperties(item, lootListItem)) ||
@@ -279,7 +287,7 @@ function getLootableItems(container) {
 	}, lootFromLists);
 
 	// Filter out any item with ignored properties.
-	return filterIgnoredItems(loot);
+	return filterIgnoredItems(lootableItems);
 }
 
 function lootGround() {
@@ -307,7 +315,7 @@ function lootContainer(container) {
 
 	const allLooted = lootItems(loot);
 
-	if (!loot.length) {
+	if (allLooted) {
 		Logger.info('All looted.');
 		return true;
 	}
@@ -363,7 +371,7 @@ function getPropertyCount(item, propertiesList) {
 	// Split the item string into lines
 	const lines = item.Properties().split('\n');
 	// Initialize a counter for valid properties
-	const count = 0;
+	var count = 0;
 
 	// Iterate over each line
 	for (var i = 0; i < lines.length; i++) {
@@ -381,6 +389,81 @@ function getPropertyCount(item, propertiesList) {
 	}
 
 	return count;
+}
+
+function stackGoldInBackpack() {
+	const gold = Orion.FindType(0x0EED, any, backpack,  ' ', 'finddistance', ' ', true);
+
+	for (var i = 0; i < gold.length; i++) {
+		Orion.MoveItem(gold[i], -1);
+		Orion.Wait(500);
+	}
+	return gold[0];
+}
+
+function sendGoldToBank() {
+	if (Configs.backpack.useBagOfSending && Player.Weight() >= (Player.MaxWeight() * 0.95)) {
+		const stackedGold = stackGoldInBackpack();
+		if (stackedGold) {
+			useBagOfSending(Orion.FindObject(stackedGold));
+		}
+	}
+}
+
+function useBagOfSending(item) {
+	const bags = Orion
+		.FindType(0x0E76, any, backpack, ' ', 'finddistance', ' ', true)
+		.map(function (serial) {
+			return Orion.FindObject(serial);
+		})
+		.filter(function (object) {
+			return object.Name().toLowerCase().indexOf('of sending') > -1 && getChargeCount(object) > 0;
+		});
+
+	if (bags.length) {
+		const bag = bags[0];
+		Orion.UseObject(bag.Serial());
+		Orion.WaitForTarget(1000);
+		Orion.TargetObject(item.Serial());
+		Orion.Wait(1500);
+	}
+}
+
+function getChargeCount(item) {
+	// Define the regular expression pattern to match "Charges: <number>", case insensitive
+	var regex = /Charges:\s*(\d+)/i;
+
+	// Use the regex to find the match in the input string
+	var match = item.Properties().match(regex);
+
+	// If a match is found, return the integer charges remaining
+	if (match) {
+		return parseInt(match[1], 10);
+	}
+
+	// If no match is found, return null or any default value
+	return 0;
+}
+
+function getWeight(item) {
+	const itemDescription = item.Properties();
+	// Regular expression to match the weight in the format "Weight: X Stone"
+	var weightRegex = /Weight:\s*(\d+)\s*Stone/;
+
+	// Execute the regex on the item description
+	var match = weightRegex.exec(itemDescription);
+
+	// Check if the match is found and extract the weight as an integer
+	if (match) {
+		return parseInt(match[1], 10);
+	} else {
+		return null; // Weight not found
+	}
+}
+
+function isEquipment(item) {
+	// Not a fool-proof test, but check if item has durability.
+	return item.Properties().toLowerCase().indexOf('durability');
 }
 
 const Logger = {
@@ -402,6 +485,9 @@ const Logger = {
 };
 
 const PrefabList = {
+	gold: [
+		0x0EED
+	],
 	jewels: [
 		0x0F13, // Ruby.
 		0x0F15, // Citrines.
@@ -410,7 +496,7 @@ const PrefabList = {
 		0x0F10, // Emerald.
 		0x0F16, // Amethist.
 		0x0F11, // Sapphire.
-		0x0F25, // Amber.
+		0x0F25 // Amber.
 	],
 	imbuingIngredients: [
 		0x572C, // Goblin Blood.
@@ -451,134 +537,134 @@ const PrefabList = {
 		0x3194, // Perfect Emerald.
 		0x3198, // Blue Diamond.
 		0x3192, // Dark Sapphire.
-		0x3196, // White Pearl.
+		0x3196 // White Pearl.
 	],
 	stygianAbyssArtifacts: [
-		"Abyssal Blade",
-		"Animated Legs of the Insane Tinker",
-		"Axe of Abandon",
-		"Axes of Fury",
-		"Banshee's Call",
-		"Basilisk Hide Breastplate",
-		"Blade of Battle",
-		"Boura Tail Shield",
-		"Breastplate of the Berserker",
-		"Burning Amber",
-		"Cast-Off Zombie Skin",
-		"Cavalry's Folly",
-		"Channeler's Defender",
-		"Claws of the Berserker",
-		"Death's Head",
-		"Defender of the Magus",
-		"Demon Bridle Ring",
-		"Demon Hunter's Standard",
-		"Dragon Hide Shield",
-		"Dragon Jade Earrings",
-		"Draconi's Wrath",
-		"Eternal Guardian Staff",
-		"Fallen Mystic's Spellbook",
-		"Giant Steps",
-		"Ironwood Composite Bow",
-		"Jade War Axe",
-		"Legacy of Despair",
-		"Lavaliere",
-		"Life Syphon",
-		"Mangler",
-		"Mantle of the Fallen",
-		"Mystic's Garb",
-		"Night Eyes",
-		"Obsidian Earrings",
-		"Petrified Snake",
-		"Pillar of Strength",
-		"Protector of the Battle Mage",
-		"Raptor Claw",
-		"Resonant Staff of Enlightenment",
-		"Shroud of the Condemned",
-		"Sign of Order",
-		"Sign of Chaos",
-		"Slither",
-		"Spined Bloodworm Bracers",
-		"Staff of Shattered Dreams",
-		"Stone Dragon's Tooth",
-		"Stone Slith Claw",
-		"Storm Caller",
-		"Sword of Shattered Hopes",
-		"Summoner's Kilt",
-		"Tangle",
-		"The Impaler's Pick",
-		"Torc of the Guardians",
-		"Token of Holy Favor",
-		"Vampiric Essence",
-		"Venom",
-		"Void Infused Kilt",
-		"Wall of Hungry Mouths"
+		'Abyssal Blade',
+		'Animated Legs of the Insane Tinker',
+		'Axe of Abandon',
+		'Axes of Fury',
+		'Banshee\'s Call',
+		'Basilisk Hide Breastplate',
+		'Blade of Battle',
+		'Boura Tail Shield',
+		'Breastplate of the Berserker',
+		'Burning Amber',
+		'Cast-Off Zombie Skin',
+		'Cavalry\'s Folly',
+		'Channeler\'s Defender',
+		'Claws of the Berserker',
+		'Death\'s Head',
+		'Defender of the Magus',
+		'Demon Bridle Ring',
+		'Demon Hunter\'s Standard',
+		'Dragon Hide Shield',
+		'Dragon Jade Earrings',
+		'Draconi\'s Wrath',
+		'Eternal Guardian Staff',
+		'Fallen Mystic\'s Spellbook',
+		'Giant Steps',
+		'Ironwood Composite Bow',
+		'Jade War Axe',
+		'Legacy of Despair',
+		'Lavaliere',
+		'Life Syphon',
+		'Mangler',
+		'Mantle of the Fallen',
+		'Mystic\'s Garb',
+		'Night Eyes',
+		'Obsidian Earrings',
+		'Petrified Snake',
+		'Pillar of Strength',
+		'Protector of the Battle Mage',
+		'Raptor Claw',
+		'Resonant Staff of Enlightenment',
+		'Shroud of the Condemned',
+		'Sign of Order',
+		'Sign of Chaos',
+		'Slither',
+		'Spined Bloodworm Bracers',
+		'Staff of Shattered Dreams',
+		'Stone Dragon\'s Tooth',
+		'Stone Slith Claw',
+		'Storm Caller',
+		'Sword of Shattered Hopes',
+		'Summoner\'s Kilt',
+		'Tangle',
+		'The Impaler\'s Pick',
+		'Torc of the Guardians',
+		'Token of Holy Favor',
+		'Vampiric Essence',
+		'Venom',
+		'Void Infused Kilt',
+		'Wall of Hungry Mouths'
 	]
 };
 
-const itemProperties = [
-	"Dexterity Bonus",
-	"Hit Point Increase",
-	"Intelligence Bonus",
-	"Mana Increase",
-	"Stamina Increase",
-	"Strength Bonus",
-	"Hit Point Regeneration",
-	"Mana Regeneration",
-	"Stamina Regeneration",
-	"Assassin Honed",
-	"Blood Drinker",
-	"Battle Lust",
-	"Hit Cold Area",
-	"Hit Curse",
-	"Hit Dispel",
-	"Hit Energy Area",
-	"Hit Fatigue",
-	"Hit Fire Area",
-	"Hit Fireball",
-	"Hit Harm",
-	"Hit Life Leech",
-	"Hit Lightning",
-	"Hit Lower Attack",
-	"Hit Lower Defense",
-	"Hit Mana Drain",
-	"Hit Mana Leech",
-	"Hit Physical Area",
-	"Hit Poison Area",
-	"Searing Weapon",
-	"Splintering Weapon",
-	"Hit Stamina Leech",
-	"Casting Focus",
-	"Faster Casting",
-	"Faster Cast Recovery",
-	"Lower Mana Cost",
-	"Lower Reagent Cost",
-	"Mage Armor",
-	"Mage Weapon",
-	"Resonance",
-	"Spell Channeling",
-	"Spell Damage Increase",
-	"Spell Focusing",
-	"Spell Consumption",
-	"Damage Increase",
-	"Swing Speed Increase",
-	"Use Best Weapon Skill",
-	"Hit Chance Increase",
-	"Balanced",
-	"Damage Modifier",
-	"Lower Ammo Cost",
-	"Velocity",
-	"Damage Eater",
-	"Rage Focus",
-	"Reactive Paralyze",
-	"Reflect Physical Damage",
-	"Soul Charge",
-	"Defense Chance Increase",
-	"Enhance Potions",
-	"Lower Requirements",
-	"Luck",
-	"Mana Burst",
-	"Mana Phase",
-	"Night Sight",
-	"Self Repair",
-	"Skill Bonus",
+const ItemProperties = [
+	'Dexterity Bonus',
+	'Hit Point Increase',
+	'Intelligence Bonus',
+	'Mana Increase',
+	'Stamina Increase',
+	'Strength Bonus',
+	'Hit Point Regeneration',
+	'Mana Regeneration',
+	'Stamina Regeneration',
+	'Assassin Honed',
+	'Blood Drinker',
+	'Battle Lust',
+	'Hit Cold Area',
+	'Hit Curse',
+	'Hit Dispel',
+	'Hit Energy Area',
+	'Hit Fatigue',
+	'Hit Fire Area',
+	'Hit Fireball',
+	'Hit Harm',
+	'Hit Life Leech',
+	'Hit Lightning',
+	'Hit Lower Attack',
+	'Hit Lower Defense',
+	'Hit Mana Drain',
+	'Hit Mana Leech',
+	'Hit Physical Area',
+	'Hit Poison Area',
+	'Searing Weapon',
+	'Splintering Weapon',
+	'Hit Stamina Leech',
+	'Casting Focus',
+	'Faster Casting',
+	'Faster Cast Recovery',
+	'Lower Mana Cost',
+	'Lower Reagent Cost',
+	'Mage Armor',
+	'Mage Weapon',
+	'Resonance',
+	'Spell Channeling',
+	'Spell Damage Increase',
+	'Spell Focusing',
+	'Spell Consumption',
+	'Damage Increase',
+	'Swing Speed Increase',
+	'Use Best Weapon Skill',
+	'Hit Chance Increase',
+	'Balanced',
+	'Damage Modifier',
+	'Lower Ammo Cost',
+	'Velocity',
+	'Damage Eater',
+	'Rage Focus',
+	'Reactive Paralyze',
+	'Reflect Physical Damage',
+	'Soul Charge',
+	'Defense Chance Increase',
+	'Enhance Potions',
+	'Lower Requirements',
+	'Luck',
+	'Mana Burst',
+	'Mana Phase',
+	'Night Sight',
+	'Self Repair',
+	'Skill Bonus'
 ];
